@@ -1,6 +1,7 @@
 package org.demo.td5.controller;
 
 import org.demo.td5.entity.Dish;
+import org.demo.td5.entity.DishIngredient;
 import org.demo.td5.entity.Ingredient;
 import org.demo.td5.repository.DishRepository;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,26 @@ public class DishController {
 
             Dish updated = dishRepository.updateIngredients(id, ingredients);
             return ResponseEntity.status(HttpStatus.OK).body(updated);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{id}/ingredients")
+    public ResponseEntity<?> getDishIngredients(
+            @PathVariable Integer id,
+            @RequestParam(required = false) String ingredientName,
+            @RequestParam(required = false) Double ingredientPriceAround) {
+        try {
+            Dish dish = dishRepository.findById(id);
+            if (dish == null) {
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Dish.id=" + id + " is not found");
+            }
+
+            List<DishIngredient> ingredients = dishRepository.findIngredientsByDishIdWithFilters(id, ingredientName, ingredientPriceAround);
+            return ResponseEntity.status(HttpStatus.OK).body(ingredients);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }

@@ -191,4 +191,56 @@ public class DishRepository {
             }
         }
     }
+
+    public List<DishIngredient> findIngredientsByDishIdWithFilters(Integer dishId, String ingredientName, Double ingredientPriceAround) {
+        Connection connection = dataSource.getConnection();
+        List<DishIngredient> dishIngredients = new ArrayList<>();
+        try {
+            StringBuilder sql = new StringBuilder("""
+            SELECT ingredient.id, ingredient.name, ingredient.price, ingredient.category,
+                   di.required_quantity, di.unit
+            FROM ingredient
+            JOIN dish_ingredient di ON di.id_ingredient = ingredient.id
+            WHERE di.id_dish = ?
+            """);
+
+            if (ingredientName != null) {
+                sql.append(" AND ingredient.name ILIKE ?");
+            }
+            if (ingredientPriceAround != null) {
+                sql.append(" AND ingredient.price BETWEEN ? AND ?");
+            }
+
+            PreparedStatement ps = connection.prepareStatement(sql.toString());
+            int index = 1;
+            ps.setInt(index++, dishId);
+            if (ingredientName != null) {
+                ps.setString(index++, "%" + ingredientName + "%");
+            }
+            if (ingredientPriceAround != null) {
+                ps.setDouble(index++, ingredientPriceAround - 50);
+                ps.setDouble(index++, ingredientPriceAround + 50);
+            }
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Ingredient ingredient = new Ingredient();
+                ingredient.setId(rs.getInt("id"));
+                ingredient.setName(rs.getString("name"));
+                ingredient.setPrice(rs.getDouble("price"));
+                ingredient.setCategory(CategoryEnum.valueOf(rs.getString("category")));
+
+                DishIngredient dishIngredient = new DishIngredient();
+                dishIngredient.setIngredient(ingredient);
+                dishIngredient.setQuantity(rs.getObject("required_quantity") == null ? null : rs.getDouble("required_quantity"));
+                dishIngredient.setUnit(Unit.valueOf(rs.getString("unit")));
+                dishIngredients.add(dishIngredient);
+            }
+            return dishIngredients;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            dataSource.closeConnection(connection);
+        }
+    }
 }
