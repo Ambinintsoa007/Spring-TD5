@@ -2,14 +2,19 @@ package org.demo.td5.repository;
 
 import org.demo.td5.config.DataSource;
 import org.demo.td5.entity.*;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class DishRepository {
+    private final DataSource dataSource;
 
-    private final DataSource dataSource = new DataSource();
+    public DishRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public List<Dish> findAll() {
         Connection connection = dataSource.getConnection();

@@ -5,15 +5,20 @@ import org.demo.td5.entity.CategoryEnum;
 import org.demo.td5.entity.Ingredient;
 import org.demo.td5.entity.StockValue;
 import org.demo.td5.entity.Unit;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
 public class IngredientRepository {
+    private final DataSource dataSource;
 
-    private final DataSource dataSource = new DataSource();
+    public IngredientRepository(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
     public List<Ingredient> findAllIngredient() {
         Connection connection = dataSource.getConnection();
