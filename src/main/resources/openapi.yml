@@ -18,3 +18,67 @@ paths:
         '500':
           description: Internal server error
 
+  /dishes/{id}/ingredients:
+    put:
+      summary: update ingredients of a dish
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          appication/json:
+            schema:
+              type: array
+              items:
+                $ref: '#/components/schemas/Ingredient'
+      responses:
+        '200':
+          description: Ingredient updated
+        '400':
+          description: Request body is required
+        '404':
+          description: Dish not found
+        '500':
+          description: Internal server error
+
+components:
+  schemas:
+
+    Ingredient:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+          format: double
+
+    Dish:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        ingredients:
+          type: array
+          items:
+            $ref: '#/components/schemas/Ingredient'
+
+    StockValue:
+      type: object
+      properties:
+        value:
+          type: number
+          format: double
+        unit:
+          type: string
+        date:
+          type: string
+          format: date-time
