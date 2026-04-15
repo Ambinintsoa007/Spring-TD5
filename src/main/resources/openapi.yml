@@ -82,6 +82,23 @@ paths:
         '500':
           description: Internal server error
 
+  /ingredients/{id}:
+    get:
+      summary: Get ingredient by id
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Ingredient found
+        '404':
+          description: Ingredient not found
+        '500':
+          description: Internal server error
+
 components:
   schemas:
 
