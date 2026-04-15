@@ -1,0 +1,20 @@
+openapi: 3.0.3
+info:
+  title: Dish et Ingredient - OAS - TD5
+  description: Représentation en OAS des endpoints de Dsh et Ingredient
+  version: 1.0.0
+
+servers:
+  - http://localhost:8080
+
+paths:
+  #Dish
+  /dishes:
+    get:
+      summary: Get all dishes
+      responses:
+        '200':
+          description: List of dishes
+        '500':
+          description: Internal server error
+
