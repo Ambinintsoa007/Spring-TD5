@@ -45,6 +45,33 @@ paths:
         '500':
           description: Internal server error
 
+    get:
+      summary: Get ingredients of a dish with filter
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: ingredientName
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: ingredientPriceAround
+          in: query
+          required: false
+          schema:
+            type: number
+            format: double
+      responses:
+        '200':
+          description: List of ingredient
+        '404':
+          description: Dish not found
+        '500':
+          description: Internal server error
+
 components:
   schemas:
 
