@@ -99,6 +99,37 @@ paths:
         '500':
           description: Internal server error
 
+  /ingredients/{id}/stock:
+    get:
+      summary: Get ingredient stock at a given time and unit
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: at
+          in: query
+          required: true
+          schema:
+            type: string
+            format: date-time
+        - name: unit
+          in: query
+          required: true
+          schema:
+            type: string
+            enum: [PCS, KG, L]
+      responses:
+        '200':
+          description: stock value
+        '400':
+          description: Missing query parameters
+        '404':
+          description: Ingredient not found
+        '500':
+          description: Internal server error
+
 components:
   schemas:
 
